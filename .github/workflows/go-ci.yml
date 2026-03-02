@@ -1,0 +1,35 @@
+name: Default Go CI
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        required: false
+        type: string
+        default: "1.23"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ inputs.go-version }}
+          
+      - name: Verify Dependencies
+        run: |
+          go mod tidy
+          git diff --exit-code || (echo "go.mod/go.sum not up to date. Run go mod tidy" && exit 1)
+          
+      - name: Run Formatting Check
+        run: |
+          gofmt -l .
+          test -z $(gofmt -l .) || (echo "Some files are not formatted properly. Run gofmt -w ." && exit 1)
+          
+      - name: Run Vet
+        run: go vet ./...
+          
+      - name: Run Tests
+        run: go test -v ./...
