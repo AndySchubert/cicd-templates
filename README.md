@@ -11,7 +11,7 @@ Standard CI pipeline for Python/Poetry projects. Runs `ruff` for linting/formatt
 ```yaml
 jobs:
   test:
-    uses: AndySchubert/cicd-templates/.github/workflows/python-ci.yml@main
+    uses: null-pointer-sch/cicd-templates/.github/workflows/python-ci.yml@main
     with:
       python-version: "3.12"
 ```
@@ -23,7 +23,7 @@ Standard pipeline to build MkDocs documentation, check for broken links using Ly
 ```yaml
 jobs:
   docs:
-    uses: AndySchubert/cicd-templates/.github/workflows/mkdocs-pages.yml@main
+    uses: null-pointer-sch/cicd-templates/.github/workflows/mkdocs-pages.yml@main
     permissions:
       contents: read
       pages: write
