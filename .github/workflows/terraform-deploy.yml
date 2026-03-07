@@ -39,6 +39,9 @@ on:
       DATABASE_URL:
         required: false
         description: "Optional Database URL variable passed to Terraform env"
+      GCP_CREDENTIALS:
+        required: false
+        description: "Optional Service Account Key JSON (as an alternative to WIF)"
 
 jobs:
   deploy-infra:
@@ -49,9 +52,10 @@ jobs:
       - name: Authenticate to Google Cloud (Workload Identity Federation)
         uses: google-github-actions/auth@v2
         with:
-          # Inherits WIF configuration from the caller workflow's secrets
+          # Inherits configuration from the caller workflow's secrets
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2

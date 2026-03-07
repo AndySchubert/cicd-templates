@@ -42,6 +42,9 @@ on:
       GCP_SERVICE_ACCOUNT:
         required: true
         description: "Service Account"
+      GCP_CREDENTIALS:
+        required: false
+        description: "Optional Service Account Key JSON (as an alternative to WIF)"
 
 jobs:
   build-image:
@@ -56,6 +59,7 @@ jobs:
           token_format: "access_token"
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       # Optional Pre-Build Steps (like generating models)
       - name: Set up Python (for Make setup if needed)
