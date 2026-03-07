@@ -1,0 +1,15 @@
+name: "Docker Push"
+description: "Pushes a Docker image to a registry"
+
+inputs:
+  image-name:
+    description: "Image name to push"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Push Image
+      shell: bash
+      run: |
+        docker push "${{ inputs.image-name }}"

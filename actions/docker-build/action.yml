@@ -1,0 +1,23 @@
+name: "Docker Build"
+description: "Builds a Docker image without pushing it"
+
+inputs:
+  image-name:
+    description: "Final image name (including tag)"
+    required: true
+  dockerfile-path:
+    description: "Path to Dockerfile"
+    required: false
+    default: "Dockerfile"
+  docker-context:
+    description: "Docker build context"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Image
+      shell: bash
+      run: |
+        docker build -f ${{ inputs.dockerfile-path }} -t "${{ inputs.image-name }}" ${{ inputs.docker-context }}
