@@ -15,9 +15,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.working-directory }}
     steps:
       - uses: actions/checkout@v4
       
@@ -29,12 +26,15 @@ jobs:
         run: pip install poetry
         
       - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}
         run: poetry install --with dev
         
       - name: Run Linting
+        working-directory: ${{ inputs.working-directory }}
         run: |
           poetry run ruff check .
           poetry run ruff format --check .
           
       - name: Run Tests
+        working-directory: ${{ inputs.working-directory }}
         run: poetry run pytest
