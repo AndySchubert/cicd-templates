@@ -52,13 +52,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        id: auth
+      - name: Authenticate to Google Cloud (WIF)
+        if: ${{ secrets.GCP_CREDENTIALS == '' }}
+        id: auth-wif
         uses: google-github-actions/auth@v2
         with:
           token_format: "access_token"
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to Google Cloud (JSON Key)
+        if: ${{ secrets.GCP_CREDENTIALS != '' }}
+        id: auth-json
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: "access_token"
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       # Optional Pre-Build Steps (like generating models)
@@ -86,7 +94,7 @@ jobs:
         with:
           registry: "${{ inputs.region }}-docker.pkg.dev"
           username: "oauth2pkg"
-          password: "${{ steps.auth.outputs.access_token }}"
+          password: "${{ steps.auth-json.outputs.access_token }}${{ steps.auth-wif.outputs.access_token }}"
 
       - name: Build Docker image
         run: |

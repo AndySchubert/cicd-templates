@@ -49,12 +49,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud (Workload Identity Federation)
+      - name: Authenticate to Google Cloud (WIF)
+        if: ${{ secrets.GCP_CREDENTIALS == '' }}
+        id: auth-wif
         uses: google-github-actions/auth@v2
         with:
-          # Inherits configuration from the caller workflow's secrets
+          token_format: "access_token"
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to Google Cloud (JSON Key)
+        if: ${{ secrets.GCP_CREDENTIALS != '' }}
+        id: auth-json
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: "access_token"
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Set up Cloud SDK
